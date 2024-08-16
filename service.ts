@@ -1,4 +1,4 @@
-import Console, { error } from "console";
+import Console, { count, error } from "console";
 import {
   StudentFormDTO,
   UserRoleDTO,
@@ -11,28 +11,26 @@ import ExcelJS from "exceljs";
 import JsonWebToken from "jsonwebtoken";
 import dotenv from "dotenv";
 import Bcrypt from "bcrypt";
-import { Response } from "express";
 import nodemailer from "nodemailer";
+import pdfdocument from "pdfkit";
+import fs from "fs";
 dotenv.config();
 
 export const emailer = async(req: any, res: any) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp-mail.outlook.com",
+      host: "smtp-relay.sendinblue.com",
       port: 587,
-      tls: {
-        ciphers:'SSLv3'
-      },
       auth: {
-        user: "nils.mosciski83@ethereal.email",
-        pass: "x8yTmHBCxMtV7HZh1V",
+        user: "7a6b1b001@smtp-brevo.com",
+        pass: process.env.SMTP_PASSWORD,
       },
     });
 
     const mailOptions = {
-      from: "nils.mosciski83@ethereal.email",
-      to: "barathkrishna2108@gmail.com",
-      subject: "Nodemailer Project TOO",
+      from: "7a6b1b001@smtp-brevo.com",
+      to: "suman.kb@iresponsivesolutions.com",
+      subject: "Nodemailer Project",
       text: "Hi from your nodemailer project",
     };
 
@@ -298,12 +296,12 @@ export const getEF = async (req: any, res: any) => {
 export const getAllForPrinciple = async(req:any ,res:any)=>{
   try {
     const payload = req.body;
-    // const EFRepo = mssqldb.getRepository(EnquiryForm);
-    // const URRepo = mssqldb.getRepository(user_role);
     const getAllForPrincipleRepo = await mssqldb.query('select e.*,u.user_name from enquiry_form e inner join user_role u on e.Createdby = u.designation_id;');
+    const countGetAllForPrincipleRepo = getAllForPrincipleRepo.length;
+    console.log("count-->>getAllForPrincipleRepo--->>",countGetAllForPrincipleRepo);
     console.log("getAllForPrincipleRepo-->>",getAllForPrincipleRepo);
     res.status(200).send({
-      result: "data retrieved successfully",getAllForPrincipleRepo
+      result: "data retrieved successfully","Number of records:":countGetAllForPrincipleRepo,getAllForPrincipleRepo
     })
   } catch (error:any) {
     res.status(400).send({
@@ -371,3 +369,23 @@ export const getExcel = async (req: any, res: any) => {
     }
   }
 };
+
+export const getPDF = async(req:any,res:any)=>{
+  try {
+    const date = new Date().toDateString();
+    console.log(date);
+    const pdfdoc = new pdfdocument;
+    pdfdoc.pipe(fs.createWriteStream(`${date}.pdf`));
+    pdfdoc.text("My sample PDF document");
+    pdfdoc.addPage();
+    pdfdoc.end();
+    res.status(200).send({
+      result:"PDF generated"
+    })
+  } catch (err:any) {
+    res.status(400).send({
+        result:"Error-->>"+err.message
+    })
+  }
+
+}

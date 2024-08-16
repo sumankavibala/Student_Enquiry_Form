@@ -1,5 +1,5 @@
 import Router from "express";
-import { authenticateToken, createUserRole, deleteEF, emailer, getAllForPrinciple, getEF, getExcel, insertEF, login, updateEF } from "./service";
+import { authenticateToken, createUserRole, deleteEF, emailer, getAllForPrinciple, getEF, getExcel, getPDF, insertEF, login, updateEF } from "./service";
 
 export const loginRouter = Router();
 loginRouter.post('/login' , (req,res) => login(req,res));
@@ -27,3 +27,6 @@ emailRouter.post('/mail',(req,res)=>emailer(req,res));
 
 export const getAllForPrincipleRouter = Router();
 getAllForPrincipleRouter.get("/getAllForPrinciple",(req,res)=>getAllForPrinciple(req,res));
+
+export const getPDFRouter = Router();
+getPDFRouter.get("/getPDF",(req,res)=>getPDF(req,res));

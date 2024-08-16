@@ -2,7 +2,7 @@ import Express, { query } from 'express';
 import dotenv from 'dotenv';
 import { mssqldb } from './src/db';
 import bodyParser from 'body-parser';
-import studentForm, { createUserRoleRouter, emailRouter, exportExcelRouter, getAllForPrincipleRouter, loginRouter } from './controller';
+import studentForm, { createUserRoleRouter, emailRouter, exportExcelRouter, getAllForPrincipleRouter, getPDFRouter, loginRouter } from './controller';
 import { getAllForPrinciple } from './service';
 dotenv.config();
 
@@ -36,3 +36,5 @@ app.use("/export",exportExcelRouter);
 app.use("/emailer",emailRouter);
 
 app.use("/getAll",getAllForPrincipleRouter);
+
+app.use("/PDF",getPDFRouter);
